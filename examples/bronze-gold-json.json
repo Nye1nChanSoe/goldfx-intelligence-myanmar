@@ -1,0 +1,29 @@
+{
+  "ingested_at": "2026-05-14T18:00:03.628984+00:00",
+  "source": "goldapi_xau_usd",
+  "raw_payload": {
+    "timestamp": 1778781603,
+    "metal": "XAU",
+    "currency": "USD",
+    "exchange": "FOREXCOM",
+    "symbol": "FOREXCOM:XAUUSD",
+    "prev_close_price": 4689.29,
+    "open_price": 4689.29,
+    "low_price": 4666.62,
+    "high_price": 4718.765,
+    "open_time": 1778716800,
+    "price": 4678.065,
+    "ch": -11.23,
+    "chp": -0.24,
+    "ask": 4678.38,
+    "bid": 4677.67,
+    "price_gram_24k": 150.4033,
+    "price_gram_22k": 137.8697,
+    "price_gram_21k": 131.6029,
+    "price_gram_20k": 125.3361,
+    "price_gram_18k": 112.8025,
+    "price_gram_16k": 100.2689,
+    "price_gram_14k": 87.7352,
+    "price_gram_10k": 62.668
+  }
+}

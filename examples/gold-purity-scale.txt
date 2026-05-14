@@ -1,0 +1,14 @@
+ပဲရည် (Karat)
+------------
+
+24 ပဲရည် = 100% pure gold = 24K
+1 ပဲရည် = 4.1667% gold
+16 ပဲရည် = 66.67% pure gold = 16K gold
+20 ပဲရည် = 83.33% pure gold = 20K gold
+22 ပဲရည် = 91.67% pure gold = 22K gold
+
+Formula:
+ပဲရည် ÷ 24 × 100 = gold purity %
+ပဲရည် = karat × 1
+
+16 ပဲရည် = 16K gold = 66.67% gold + 33.33% other metals

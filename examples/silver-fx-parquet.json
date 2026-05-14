@@ -1,0 +1,30 @@
+[
+  {
+    "ingested_at": "2026-05-14T09:15:00+00:00",
+    "processed_at": "2026-05-14T09:15:10+00:00",
+
+    "provider": "exchange-rateapi",
+    "pair": "USD_THB",
+    "source_currency": "USD",
+    "target_currency": "THB",
+    "rate": 32.31,
+    "api_time": "2026-05-14T08:31:46+0000",
+
+    "bronze_bucket": "project-7abcab2d-24a7-4f5d-80a-mgm-bronze-raw-json-data",
+    "bronze_object": "source=exchange_rate_api/year=2026/month=05/day=14/2026-05-14T09-15-00Z.json"
+  },
+  {
+    "ingested_at": "2026-05-14T09:15:00+00:00",
+    "processed_at": "2026-05-14T09:15:10+00:00",
+
+    "provider": "exchange-rateapi",
+    "pair": "USD_MMK",
+    "source_currency": "USD",
+    "target_currency": "MMK",
+    "rate": 2100.0,
+    "api_time": "2026-05-14T08:31:46+0000",
+
+    "bronze_bucket": "project-7abcab2d-24a7-4f5d-80a-mgm-bronze-raw-json-data",
+    "bronze_object": "source=exchange_rate_api/year=2026/month=05/day=14/2026-05-14T09-15-00Z.json"
+  }
+]

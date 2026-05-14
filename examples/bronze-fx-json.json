@@ -1,0 +1,31 @@
+{
+  "ingested_at": "2026-05-14T18:00:02.468323+00:00",
+  "source": "exchange_rate_api",
+  "raw_payload": {
+    "provider": "exchange-rateapi",
+    "pairs": [
+      {
+        "pair": "USD_THB",
+        "response": [
+          {
+            "rate": 32.365,
+            "source": "USD",
+            "target": "THB",
+            "time": "2026-05-14T17:59:21+0000"
+          }
+        ]
+      },
+      {
+        "pair": "USD_MMK",
+        "response": [
+          {
+            "rate": 2100,
+            "source": "USD",
+            "target": "MMK",
+            "time": "2026-05-14T17:59:21+0000"
+          }
+        ]
+      }
+    ]
+  }
+}
