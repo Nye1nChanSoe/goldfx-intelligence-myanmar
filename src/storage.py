@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timezone
 from google.cloud import storage
+from zoneinfo import ZoneInfo
 
 
 storage_client = storage.Client()
@@ -8,6 +9,10 @@ storage_client = storage.Client()
 
 def utc_now():
     return datetime.now(timezone.utc)
+
+
+def bangkok_now():
+    return datetime.now(ZoneInfo("Asia/Bangkok"))
 
 
 def build_partitioned_path(source: str, dt: datetime) -> str:
@@ -20,11 +25,13 @@ def build_partitioned_path(source: str, dt: datetime) -> str:
 
 
 def write_json_to_bronze(bucket_name: str, source: str, payload: dict) -> dict:
-    now = utc_now()
-    object_path = build_partitioned_path(source, now)
+    now_utc = utc_now()
+    partition_dt = bangkok_now()
+    object_path = build_partitioned_path(source, partition_dt)
 
     wrapped_payload = {
-        "ingested_at": now.isoformat(),
+        "ingested_at": now_utc.isoformat(),
+        "partition_timezone": "Asia/Bangkok",
         "source": source,
         "raw_payload": payload,
     }
