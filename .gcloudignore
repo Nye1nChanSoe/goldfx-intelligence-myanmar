@@ -57,3 +57,6 @@ temp/
 # Local build artifacts
 dist/
 build/
+
+!sql/
+!sql/*.sql
