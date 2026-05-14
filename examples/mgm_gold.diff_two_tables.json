@@ -1,0 +1,20 @@
+{
+  "market_adjusted_gold_fx": {
+    "granularity": "one row per gold API snapshot",
+    "best_for": [
+      "time series charts",
+      "detailed analysis",
+      "premium trend over time",
+      "debugging and validation"
+    ]
+  },
+  "daily_market_summary": {
+    "granularity": "one row per day",
+    "best_for": [
+      "dashboard scorecards",
+      "daily summaries",
+      "trend summaries",
+      "Data Studio aggregate-friendly views"
+    ]
+  }
+}

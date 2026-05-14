@@ -1,0 +1,94 @@
+{
+  "summary_date": {
+    "type": "DATE",
+    "meaning": "Daily summary date."
+  },
+
+  "market_name": {
+    "type": "STRING",
+    "meaning": "Reference market name, for example myanmar_market_manual."
+  },
+
+  "avg_xau_usd_price": {
+    "type": "FLOAT64",
+    "meaning": "Average global XAU/USD gold price for the day."
+  },
+  "min_xau_usd_price": {
+    "type": "FLOAT64",
+    "meaning": "Minimum global XAU/USD gold price observed that day."
+  },
+  "max_xau_usd_price": {
+    "type": "FLOAT64",
+    "meaning": "Maximum global XAU/USD gold price observed that day."
+  },
+
+  "official_usd_mmk_rate": {
+    "type": "FLOAT64",
+    "meaning": "Official USD/MMK rate used for that day."
+  },
+  "unofficial_usd_mmk_buy_rate": {
+    "type": "FLOAT64",
+    "meaning": "Manual unofficial USD/MMK buy rate used for that day."
+  },
+  "unofficial_usd_mmk_sell_rate": {
+    "type": "FLOAT64",
+    "meaning": "Manual unofficial USD/MMK sell rate used for that day."
+  },
+  "unofficial_usd_mmk_mid_rate": {
+    "type": "FLOAT64",
+    "meaning": "Midpoint of unofficial USD/MMK buy and sell rates for that day."
+  },
+
+  "official_gold_kyat_thar_16k_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Official Myanmar 16K gold price for 1 kyat-thar used that day."
+  },
+  "unofficial_gold_kyat_thar_16k_buy_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Manual unofficial Myanmar 16K gold buy price for 1 kyat-thar."
+  },
+  "unofficial_gold_kyat_thar_16k_sell_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Manual unofficial Myanmar 16K gold sell price for 1 kyat-thar."
+  },
+  "unofficial_gold_kyat_thar_16k_mid_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Midpoint of unofficial Myanmar 16K gold buy and sell prices."
+  },
+
+  "avg_implied_gold_kyat_thar_16k_official_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Daily average implied 1 kyat-thar 16K gold price using official USD/MMK."
+  },
+  "avg_implied_gold_kyat_thar_16k_unofficial_mid_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Daily average implied 1 kyat-thar 16K gold price using unofficial USD/MMK midpoint."
+  },
+
+  "avg_fx_market_premium_mid_pct": {
+    "type": "FLOAT64",
+    "meaning": "Daily average percentage gap between unofficial USD/MMK midpoint and official USD/MMK."
+  },
+  "avg_gold_official_to_market_mid_premium_pct": {
+    "type": "FLOAT64",
+    "meaning": "Daily average percentage gap between unofficial gold midpoint and official gold price."
+  },
+
+  "avg_gold_market_buy_sell_abs_spread_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Daily average MMK spread between unofficial gold buy and sell prices."
+  },
+  "avg_gold_market_buy_sell_abs_spread_pct": {
+    "type": "FLOAT64",
+    "meaning": "Daily average buy-sell spread percentage for unofficial Myanmar gold."
+  },
+
+  "total_gold_records": {
+    "type": "INT64",
+    "meaning": "Number of gold API snapshots used in the daily summary."
+  },
+  "processed_at": {
+    "type": "TIMESTAMP",
+    "meaning": "Timestamp when the daily summary table was generated."
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "snapshot_date": {
+    "type": "DATE",
+    "meaning": "Business date of the gold snapshot, usually based on Asia/Bangkok/Myanmar-side reporting date."
+  },
+  "snapshot_timestamp": {
+    "type": "TIMESTAMP",
+    "meaning": "Exact timestamp when the gold API data was ingested."
+  },
+
+  "market_name": {
+    "type": "STRING",
+    "meaning": "Name of the reference market source, for example myanmar_market_manual."
+  },
+
+  "gold_symbol": {
+    "type": "STRING",
+    "meaning": "Gold market symbol from the API, for example FOREXCOM:XAUUSD."
+  },
+  "gold_metal": {
+    "type": "STRING",
+    "meaning": "Metal code, usually XAU."
+  },
+  "gold_currency": {
+    "type": "STRING",
+    "meaning": "Currency used by the gold API, usually USD."
+  },
+
+  "xau_usd_price": {
+    "type": "FLOAT64",
+    "meaning": "Global gold price in USD from the Gold API."
+  },
+  "xau_usd_bid": {
+    "type": "FLOAT64",
+    "meaning": "Bid price for XAU/USD from the Gold API."
+  },
+  "xau_usd_ask": {
+    "type": "FLOAT64",
+    "meaning": "Ask price for XAU/USD from the Gold API."
+  },
+  "xau_usd_change": {
+    "type": "FLOAT64",
+    "meaning": "Absolute price change from the Gold API."
+  },
+  "xau_usd_change_percent": {
+    "type": "FLOAT64",
+    "meaning": "Percentage price change from the Gold API."
+  },
+
+  "xau_usd_price_gram_16k": {
+    "type": "FLOAT64",
+    "meaning": "Gold API 16K gold price per gram in USD."
+  },
+  "xau_usd_price_gram_24k": {
+    "type": "FLOAT64",
+    "meaning": "Gold API 24K gold price per gram in USD."
+  },
+
+  "official_usd_mmk_rate": {
+    "type": "FLOAT64",
+    "meaning": "Official CBM USD/MMK rate, currently 2100 MMK per USD."
+  },
+
+  "unofficial_usd_mmk_buy_rate": {
+    "type": "FLOAT64",
+    "meaning": "Manual unofficial Myanmar market USD/MMK buy rate."
+  },
+  "unofficial_usd_mmk_sell_rate": {
+    "type": "FLOAT64",
+    "meaning": "Manual unofficial Myanmar market USD/MMK sell rate."
+  },
+  "unofficial_usd_mmk_mid_rate": {
+    "type": "FLOAT64",
+    "meaning": "Midpoint of unofficial USD/MMK buy and sell rates."
+  },
+
+  "official_gold_kyat_thar_16k_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Official Myanmar 16K gold price for 1 kyat-thar in MMK."
+  },
+
+  "unofficial_gold_kyat_thar_16k_buy_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Manual unofficial Myanmar market buy price for 1 kyat-thar of 16K gold."
+  },
+  "unofficial_gold_kyat_thar_16k_sell_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Manual unofficial Myanmar market sell price for 1 kyat-thar of 16K gold."
+  },
+  "unofficial_gold_kyat_thar_16k_mid_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Midpoint of unofficial 16K gold buy and sell prices."
+  },
+
+  "gold_unit_name": {
+    "type": "STRING",
+    "meaning": "Local gold unit name, for example kyat_thar."
+  },
+  "gold_unit_grams": {
+    "type": "FLOAT64",
+    "meaning": "Gram conversion for 1 kyat-thar. Currently 16.3293 grams."
+  },
+  "gold_karat": {
+    "type": "STRING",
+    "meaning": "Gold purity used for Myanmar reference price, for example 16K."
+  },
+
+  "implied_gold_kyat_thar_16k_official_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Estimated 1 kyat-thar 16K gold price in MMK using global 16K gram price and official USD/MMK."
+  },
+  "implied_gold_kyat_thar_16k_unofficial_buy_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Estimated 1 kyat-thar 16K gold price in MMK using global 16K gram price and unofficial USD/MMK buy rate."
+  },
+  "implied_gold_kyat_thar_16k_unofficial_sell_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Estimated 1 kyat-thar 16K gold price in MMK using global 16K gram price and unofficial USD/MMK sell rate."
+  },
+  "implied_gold_kyat_thar_16k_unofficial_mid_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Estimated 1 kyat-thar 16K gold price in MMK using global 16K gram price and unofficial USD/MMK midpoint."
+  },
+
+  "fx_market_premium_buy_pct": {
+    "type": "FLOAT64",
+    "meaning": "Percentage gap between unofficial USD/MMK buy rate and official USD/MMK rate."
+  },
+  "fx_market_premium_sell_pct": {
+    "type": "FLOAT64",
+    "meaning": "Percentage gap between unofficial USD/MMK sell rate and official USD/MMK rate."
+  },
+  "fx_market_premium_mid_pct": {
+    "type": "FLOAT64",
+    "meaning": "Percentage gap between unofficial USD/MMK midpoint and official USD/MMK rate."
+  },
+
+  "gold_official_to_market_buy_premium_pct": {
+    "type": "FLOAT64",
+    "meaning": "Percentage gap between unofficial 16K gold buy price and official 16K gold price."
+  },
+  "gold_official_to_market_sell_premium_pct": {
+    "type": "FLOAT64",
+    "meaning": "Percentage gap between unofficial 16K gold sell price and official 16K gold price."
+  },
+  "gold_official_to_market_mid_premium_pct": {
+    "type": "FLOAT64",
+    "meaning": "Percentage gap between unofficial 16K gold midpoint price and official 16K gold price."
+  },
+
+  "gold_market_buy_sell_abs_spread_mmk": {
+    "type": "FLOAT64",
+    "meaning": "Absolute MMK difference between unofficial gold buy and sell prices."
+  },
+  "gold_market_buy_sell_abs_spread_pct": {
+    "type": "FLOAT64",
+    "meaning": "Buy-sell spread as a percentage of the unofficial gold midpoint price."
+  },
+
+  "source_note": {
+    "type": "STRING",
+    "meaning": "Human note describing where/how the manual reference values were collected."
+  },
+  "processed_at": {
+    "type": "TIMESTAMP",
+    "meaning": "Timestamp when this Gold-layer row was generated."
+  }
+}
