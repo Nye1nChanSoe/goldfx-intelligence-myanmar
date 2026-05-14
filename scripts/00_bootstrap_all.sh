@@ -15,20 +15,20 @@ echo "BRONZE_BUCKET:  $BRONZE_BUCKET"
 echo "SILVER_BUCKET:  $SILVER_BUCKET"
 echo ""
 
-# echo "Step 2: Enabling required GCP APIs..."
-# ./scripts/01_enable_apis.sh
+echo "Step 2: Enabling required GCP APIs..."
+./scripts/01_enable_apis.sh
 
-# echo ""
-# echo "Step 3: Creating bronze and silver buckets..."
-# ./scripts/02_create_buckets.sh
+echo ""
+echo "Step 3: Creating bronze and silver buckets..."
+./scripts/02_create_buckets.sh
 
-# echo ""
-# echo "Step 4: Creating service accounts..."
-# ./scripts/03_create_service_accounts.sh
+echo ""
+echo "Step 4: Creating service accounts..."
+./scripts/03_create_service_accounts.sh
 
-# echo ""
-# echo "Step 5: Creating or updating secrets..."
-# ./scripts/04_create_secrets.sh
+echo ""
+echo "Step 5: Creating or updating secrets..."
+./scripts/04_create_secrets.sh
 
 echo ""
 echo "Step 6: Granting IAM permissions..."

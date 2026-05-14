@@ -11,3 +11,5 @@ export SCHEDULER_SA="mgm-scheduler-sa"
 
 export INGESTOR_SA_EMAIL="${INGESTOR_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 export SCHEDULER_SA_EMAIL="${SCHEDULER_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
+
+export BQ_LOCATION=${REGION}
