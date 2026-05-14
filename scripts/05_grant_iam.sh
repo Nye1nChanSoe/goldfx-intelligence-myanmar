@@ -182,4 +182,26 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --condition=None \
   || true
 
+echo "Granting Scheduler/Event SA permission to run BigQuery scheduled queries..."
+
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:${SCHEDULER_SA_EMAIL}" \
+  --role="roles/bigquery.admin" \
+  --condition=None \
+  || true
+
+echo "Granting Scheduler/Event SA read access to silver bucket for BigQuery external tables..."
+
+gcloud storage buckets add-iam-policy-binding "gs://${SILVER_BUCKET}" \
+  --member="serviceAccount:${SCHEDULER_SA_EMAIL}" \
+  --role="roles/storage.objectViewer" \
+  || true
+
+echo "Granting Scheduler/Event SA read access to bronze bucket..."
+
+gcloud storage buckets add-iam-policy-binding "gs://${BRONZE_BUCKET}" \
+  --member="serviceAccount:${SCHEDULER_SA_EMAIL}" \
+  --role="roles/storage.objectViewer" \
+  || true
+
 echo "IAM permissions ready."

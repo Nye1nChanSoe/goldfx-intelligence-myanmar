@@ -10,6 +10,7 @@ gcloud services enable \
   cloudscheduler.googleapis.com \
   eventarc.googleapis.com \
   pubsub.googleapis.com \
+  bigquerydatatransfer.googleapis.com \
   secretmanager.googleapis.com \
   storage.googleapis.com \
   iam.googleapis.com \

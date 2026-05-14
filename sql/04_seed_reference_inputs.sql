@@ -6,7 +6,7 @@
 
 
 
--- update manually each day
+-- update manually each day (Idempotent)
 -- It creates at most one record per day per market name
 -- merge condition prevents duplicates for the same
 MERGE `project-7abcab2d-24a7-4f5d-80a.mgm_reference.market_reference_inputs` T

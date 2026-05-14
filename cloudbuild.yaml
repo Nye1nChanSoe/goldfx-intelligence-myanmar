@@ -264,5 +264,15 @@ steps:
         bq query --project_id=$PROJECT_ID --location="${_REGION}" --use_legacy_sql=false < sql/06_build_market_adjusted_gold_fx.sql
         bq query --project_id=$PROJECT_ID --location="${_REGION}" --use_legacy_sql=false < sql/07_build_daily_market_summary.sql
 
+  - id: "Create BigQuery scheduled queries"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        set -e
+        chmod +x scripts/08_create_scheduled_queries.sh
+        ./scripts/08_create_scheduled_queries.sh
+
 images:
   - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/${_IMAGE_NAME}:$BUILD_ID"
