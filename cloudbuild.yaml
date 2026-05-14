@@ -1,0 +1,270 @@
+substitutions:
+  _REGION: asia-southeast1
+
+  _BRONZE_BUCKET: mgm-bronze-raw-json-data
+  _SILVER_BUCKET: mgm-silver-processed-data
+
+  _ARTIFACT_REPO: mgm
+  _IMAGE_NAME: mgm-ingestion
+
+  _INGESTOR_SA: mgm-ingestor-sa@project-7abcab2d-24a7-4f5d-80a.iam.gserviceaccount.com
+  _SCHEDULER_SA: mgm-scheduler-sa@project-7abcab2d-24a7-4f5d-80a.iam.gserviceaccount.com
+
+  _GOLD_SERVICE: mgm-ingest-gold
+  _FX_SERVICE: mgm-ingest-fx
+  _TRANSFORM_SERVICE: mgm-transform-silver
+
+  _GOLD_SCHEDULER_JOB: mgm-ingest-gold-every-15m
+  _FX_SCHEDULER_JOB: mgm-ingest-fx-every-15m
+
+  _EVENTARC_TRIGGER: mgm-bronze-to-silver-trigger
+
+  _SCHEDULE_CRON: "*/15 * * * *"
+  _TIME_ZONE: Asia/Bangkok
+
+steps:
+  - id: "Ensure Artifact Registry repo exists"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        set -e
+
+        gcloud artifacts repositories describe ${_ARTIFACT_REPO} \
+          --location=${_REGION} \
+          --project=$PROJECT_ID || \
+        gcloud artifacts repositories create ${_ARTIFACT_REPO} \
+          --repository-format=docker \
+          --location=${_REGION} \
+          --description="MGM pipeline Docker images" \
+          --project=$PROJECT_ID
+
+  - id: "Build MGM ingestion image"
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/${_IMAGE_NAME}:$BUILD_ID"
+      - "."
+
+  - id: "Push MGM ingestion image"
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/${_IMAGE_NAME}:$BUILD_ID"
+
+  - id: "Deploy Cloud Run service - Gold ingestion"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "${_GOLD_SERVICE}"
+      - "--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/${_IMAGE_NAME}:$BUILD_ID"
+      - "--region=${_REGION}"
+      - "--platform=managed"
+      - "--service-account=${_INGESTOR_SA}"
+      - "--no-allow-unauthenticated"
+      - "--set-env-vars=INGEST_TARGET=gold,BRONZE_BUCKET=${_BRONZE_BUCKET},SILVER_BUCKET=${_SILVER_BUCKET}"
+      - "--set-secrets=GOLD_API_KEY=mgm-gold-api-key:latest"
+
+  - id: "Deploy Cloud Run service - FX ingestion"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "${_FX_SERVICE}"
+      - "--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/${_IMAGE_NAME}:$BUILD_ID"
+      - "--region=${_REGION}"
+      - "--platform=managed"
+      - "--service-account=${_INGESTOR_SA}"
+      - "--no-allow-unauthenticated"
+      - "--set-env-vars=INGEST_TARGET=fx,BRONZE_BUCKET=${_BRONZE_BUCKET},SILVER_BUCKET=${_SILVER_BUCKET}"
+      - "--set-secrets=EXCHANGE_API_KEY=mgm-exchange-api-key:latest"
+
+  - id: "Deploy Cloud Run service - Silver transform"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "${_TRANSFORM_SERVICE}"
+      - "--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/${_IMAGE_NAME}:$BUILD_ID"
+      - "--region=${_REGION}"
+      - "--platform=managed"
+      - "--service-account=${_INGESTOR_SA}"
+      - "--no-allow-unauthenticated"
+      - "--set-env-vars=BRONZE_BUCKET=${_BRONZE_BUCKET},SILVER_BUCKET=${_SILVER_BUCKET}"
+
+  - id: "Allow Scheduler to invoke Gold Cloud Run service"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "services"
+      - "add-iam-policy-binding"
+      - "${_GOLD_SERVICE}"
+      - "--region=${_REGION}"
+      - "--project=$PROJECT_ID"
+      - "--member=serviceAccount:${_SCHEDULER_SA}"
+      - "--role=roles/run.invoker"
+
+  - id: "Allow Scheduler to invoke FX Cloud Run service"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "services"
+      - "add-iam-policy-binding"
+      - "${_FX_SERVICE}"
+      - "--region=${_REGION}"
+      - "--project=$PROJECT_ID"
+      - "--member=serviceAccount:${_SCHEDULER_SA}"
+      - "--role=roles/run.invoker"
+
+  - id: "Allow Eventarc to invoke Silver transform Cloud Run service"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "services"
+      - "add-iam-policy-binding"
+      - "${_TRANSFORM_SERVICE}"
+      - "--region=${_REGION}"
+      - "--project=$PROJECT_ID"
+      - "--member=serviceAccount:${_SCHEDULER_SA}"
+      - "--role=roles/run.invoker"
+
+  - id: "Create or update Gold Scheduler job"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        set -e
+
+        GOLD_URL=$(gcloud run services describe ${_GOLD_SERVICE} \
+          --region=${_REGION} \
+          --project=$PROJECT_ID \
+          --format="value(status.url)")
+
+        if gcloud scheduler jobs describe ${_GOLD_SCHEDULER_JOB} \
+          --location=${_REGION} \
+          --project=$PROJECT_ID > /dev/null 2>&1; then
+
+          echo "Updating existing scheduler job: ${_GOLD_SCHEDULER_JOB}"
+
+          gcloud scheduler jobs update http ${_GOLD_SCHEDULER_JOB} \
+            --project=$PROJECT_ID \
+            --location=${_REGION} \
+            --schedule="${_SCHEDULE_CRON}" \
+            --time-zone="${_TIME_ZONE}" \
+            --uri="$${GOLD_URL}/ingest" \
+            --http-method=POST \
+            --oidc-service-account-email=${_SCHEDULER_SA}
+
+        else
+          echo "Creating scheduler job: ${_GOLD_SCHEDULER_JOB}"
+
+          gcloud scheduler jobs create http ${_GOLD_SCHEDULER_JOB} \
+            --project=$PROJECT_ID \
+            --location=${_REGION} \
+            --schedule="${_SCHEDULE_CRON}" \
+            --time-zone="${_TIME_ZONE}" \
+            --uri="$${GOLD_URL}/ingest" \
+            --http-method=POST \
+            --oidc-service-account-email=${_SCHEDULER_SA}
+        fi
+
+  - id: "Create or update FX Scheduler job"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        set -e
+
+        FX_URL=$(gcloud run services describe ${_FX_SERVICE} \
+          --region=${_REGION} \
+          --project=$PROJECT_ID \
+          --format="value(status.url)")
+
+        if gcloud scheduler jobs describe ${_FX_SCHEDULER_JOB} \
+          --location=${_REGION} \
+          --project=$PROJECT_ID > /dev/null 2>&1; then
+
+          echo "Updating existing scheduler job: ${_FX_SCHEDULER_JOB}"
+
+          gcloud scheduler jobs update http ${_FX_SCHEDULER_JOB} \
+            --project=$PROJECT_ID \
+            --location=${_REGION} \
+            --schedule="${_SCHEDULE_CRON}" \
+            --time-zone="${_TIME_ZONE}" \
+            --uri="$${FX_URL}/ingest" \
+            --http-method=POST \
+            --oidc-service-account-email=${_SCHEDULER_SA}
+
+        else
+          echo "Creating scheduler job: ${_FX_SCHEDULER_JOB}"
+
+          gcloud scheduler jobs create http ${_FX_SCHEDULER_JOB} \
+            --project=$PROJECT_ID \
+            --location=${_REGION} \
+            --schedule="${_SCHEDULE_CRON}" \
+            --time-zone="${_TIME_ZONE}" \
+            --uri="$${FX_URL}/ingest" \
+            --http-method=POST \
+            --oidc-service-account-email=${_SCHEDULER_SA}
+        fi
+
+  - id: "Create Eventarc trigger - Bronze to Silver"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        set -e
+
+        if gcloud eventarc triggers describe ${_EVENTARC_TRIGGER} \
+          --location=${_REGION} \
+          --project=$PROJECT_ID > /dev/null 2>&1; then
+
+          echo "Eventarc trigger already exists: ${_EVENTARC_TRIGGER}"
+          echo "Skipping trigger creation."
+
+        else
+          echo "Creating Eventarc trigger: ${_EVENTARC_TRIGGER}"
+
+          gcloud eventarc triggers create ${_EVENTARC_TRIGGER} \
+            --project=$PROJECT_ID \
+            --location=${_REGION} \
+            --destination-run-service=${_TRANSFORM_SERVICE} \
+            --destination-run-region=${_REGION} \
+            --destination-run-path=/transform \
+            --event-filters="type=google.cloud.storage.object.v1.finalized" \
+            --event-filters="bucket=${_BRONZE_BUCKET}" \
+            --service-account=${_SCHEDULER_SA}
+        fi
+
+  - id: "Create BigQuery silver external tables"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        set -e
+
+        BQ_LOCATION="asia-southeast1"
+
+        bq --location="${BQ_LOCATION}" query \
+          --use_legacy_sql=false \
+          < sql/01_create_datasets.sql
+
+        bq --location="${BQ_LOCATION}" query \
+          --use_legacy_sql=false \
+          < sql/02_create_external_tables.sql
+
+images:
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/${_IMAGE_NAME}:$BUILD_ID"
